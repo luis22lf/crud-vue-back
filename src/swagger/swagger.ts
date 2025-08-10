@@ -30,7 +30,7 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));
 
 // ... suas outras rotas e configurações
 
-app.listen(3001, () => {
-  console.log('Servidor swagger rodando na porta 3001');
-  console.log('Acesse a documentação em http://localhost:3001/api-docs');
+app.listen(3002, () => {
+  console.log('Servidor swagger rodando na porta 3002');
+  console.log('Acesse a documentação em http://localhost:3002/api-docs');
 });

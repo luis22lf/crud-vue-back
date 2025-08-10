@@ -1,9 +1,18 @@
 import { Router } from 'express';
 import pool from '../config/db';
 import { Equipamento, ApiResponse } from '../types';
+import axios from 'axios'; // Adicionado para json-server
 
 const router = Router();
 console.log("rodando arquivo de rotas");
+
+//para rodar json server precisa dar esse comando:
+//npx json-server --watch db.json --port 3001
+
+//json server fiz apenas para rota get
+
+// Configuração do json-server (estou usando 3001 pois 3000 é do postgre)
+const JSON_SERVER_URL = 'http://localhost:3001/equipamentos';
 
 /**
  * @swagger
@@ -166,7 +175,7 @@ router.post('/Cadastro', async (req, res) => {
  */
 
 
-// Rota para buscar aparelhos
+// Rota para buscar aparelhos - POSTGRE
 router.get('/Allaparelhos', async (req, res) => {
   try {
     const result = await pool.query('SELECT * FROM equipamentos');
@@ -178,6 +187,18 @@ router.get('/Allaparelhos', async (req, res) => {
   }
 });
 
+//Rota para buscar aparelhos - JSON-SERVER (comentar quando não usar)
+/*router.get('/Allaparelhos', async (req, res) => {
+  try {
+    // Usando json-server
+    const response = await axios.get(JSON_SERVER_URL);
+    return res.status(200).json(response.data);
+    } catch (err) {
+    console.error(err);
+    return res.status(500).json({ error: 'Erro ao buscar equipamentos' });
+  }
+});
+*/
 
 
 
