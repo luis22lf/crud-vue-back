@@ -109,8 +109,8 @@ const JSON_SERVER_URL = 'http://localhost:3001/equipamentos';
  */
 
 
-// Rota para cadastrar aparelho
-router.post('/Cadastro', async (req, res) => {
+// Rota para cadastrar aparelho - POSTGRE
+/*router.post('/Cadastro', async (req, res) => {
   const { nome, situacao } = req.body as Equipamento;
 
   console.log('Dados recebidos:', req.body);
@@ -142,8 +142,45 @@ router.post('/Cadastro', async (req, res) => {
     };
     return res.status(500).json(response);
   }
-});
+});*/
 
+
+//Cadastro de aparelho - JSON-SERVER
+router.post('/Cadastro', async (req, res) => {
+    const { nome, situacao } = req.body;
+
+    // Verificando se campos estão vazios
+    if (!nome || !situacao) 
+    {
+      const response: ApiResponse<null> = 
+      {
+        success: false,
+        error: 'Nome e situação são obrigatórios.'
+      };
+      return res.status(400).json(response);
+    }
+
+  try {
+    const response = await axios.post(JSON_SERVER_URL, { nome, situacao });
+    console.log('Dados recebidos:', req.body);
+
+    const retornoEndpoint: ApiResponse<Equipamento> = {
+      success: true,
+      data: response.data // O json-server retorna o objeto criado diretamente
+    };
+    
+    return res.status(201).json(retornoEndpoint);
+
+    } catch (err) {
+    console.error(err);
+    
+    const response: ApiResponse<null> = {
+      success: false,
+      error: 'Erro ao cadastrar equipamento'
+    };
+    return res.status(500).json(response);
+  }
+});
 
 
 /**
@@ -176,7 +213,7 @@ router.post('/Cadastro', async (req, res) => {
 
 
 // Rota para buscar aparelhos - POSTGRE
-router.get('/Allaparelhos', async (req, res) => {
+/*router.get('/Allaparelhos', async (req, res) => {
   try {
     const result = await pool.query('SELECT * FROM equipamentos');
     console.log('result:', result.rows);
@@ -185,10 +222,10 @@ router.get('/Allaparelhos', async (req, res) => {
     console.error(err);
     return res.status(500).json({ error: 'Erro ao buscar equipamentos' });
   }
-});
+});*/
 
 //Rota para buscar aparelhos - JSON-SERVER (comentar quando não usar)
-/*router.get('/Allaparelhos', async (req, res) => {
+router.get('/Allaparelhos', async (req, res) => {
   try {
     // Usando json-server
     const response = await axios.get(JSON_SERVER_URL);
@@ -198,7 +235,7 @@ router.get('/Allaparelhos', async (req, res) => {
     return res.status(500).json({ error: 'Erro ao buscar equipamentos' });
   }
 });
-*/
+
 
 
 
@@ -248,8 +285,8 @@ router.get('/Allaparelhos', async (req, res) => {
  */
 
 
-// Rota para deletar aparelhos
-router.delete('/Deletar/:id', async (req, res) => {
+// Rota para deletar aparelhos - Postgre
+/*router.delete('/Deletar/:id', async (req, res) => {
   const { id } = req.params;
   try {
     const result = await pool.query('DELETE FROM equipamentos WHERE id = $1', [id]);
@@ -260,7 +297,23 @@ router.delete('/Deletar/:id', async (req, res) => {
     return res.status(204).json(response);
   } catch (err) {
     console.error(err);
-    return res.status(500).json({ error: 'Erro ao buscar equipamentos' });
+    return res.status(500).json({ error: 'Erro ao deletar equipamentos' });
+  }
+});*/
+
+//Rota para deletar aparelhos - JSON-SERVER (comentar quando não usar)
+router.delete('/Deletar/:id', async (req, res) => {
+  const { id } = req.params;
+  try {
+    const response = await axios.delete(`${JSON_SERVER_URL}/${id}`);
+    const retornoEndpoint: ApiResponse<null> = {
+      success: true,
+      data: null,
+    };
+    return res.status(204).json(retornoEndpoint);
+    } catch (err) {
+    console.error(err);
+    return res.status(500).json({ error: 'Erro ao deletar equipamentos' });
   }
 });
 
@@ -295,8 +348,8 @@ router.delete('/Deletar/:id', async (req, res) => {
  *         description: Erro interno do servidor
  */
 
-// Rota para editar aparelhos
-router.put('/Editar/:id', async (req, res) => {
+// Rota para editar aparelhos - POSTGRE
+/*router.put('/Editar/:id', async (req, res) => {
   console.log('req.body:', req.body);
   const { id } = req.params;
   const { nome, situacao } = req.body;
@@ -306,6 +359,19 @@ router.put('/Editar/:id', async (req, res) => {
   } catch (err) {
     console.error(err);
     return res.status(500).json({ error: 'Erro ao editar equipamento' });
+  }
+});*/
+
+//Rota para editar aparelhos - JSON-SERVER (comentar quando não usar)
+router.put('/Editar/:id', async (req, res) => {
+  const { id } = req.params;
+  const { nome, situacao } = req.body;
+  try {
+    const response = await axios.put(`${JSON_SERVER_URL}/${id}`, { nome, situacao });
+    return res.status(204).json(response.data); // json-server retorna o objeto atualizado
+    } catch (err) {
+    console.error(err);
+    return res.status(500).json({ error: 'Erro ao editar equipamentos' });
   }
 });
 

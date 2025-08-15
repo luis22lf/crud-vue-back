@@ -1,6 +1,19 @@
 {
   "equipamentos": [
-    { "id": 1, "nome": "jeba", "situacao": "funcional" },
-    { "id": 2, "nome": "pimba", "situacao": "uso-exclusivo" }
+    {
+      "id": "1",
+      "nome": "jeba",
+      "situacao": "funcional"
+    },
+    {
+      "id": "2",
+      "nome": "pimba",
+      "situacao": "uso-exclusivo"
+    },
+    {
+      "nome": "cadastroAxiosgostoso",
+      "situacao": "ndef",
+      "id": "9a2d"
+    }
   ]
 }
