@@ -1,7 +1,4 @@
 import { Router } from 'express';
-import pool from '../config/db';
-import { Equipamento, ApiResponse } from '../types';
-import axios from 'axios'; // Adicionado para json-server
 
 const router = Router();
 console.log("rodando arquivo de rotas");
@@ -9,10 +6,17 @@ console.log("rodando arquivo de rotas");
 //para rodar json server precisa dar esse comando:
 //npx json-server --watch db.json --port 3001
 
-//json server fiz apenas para rota get
-
 // Configuração do json-server (estou usando 3001 pois 3000 é do postgre)
 const JSON_SERVER_URL = 'http://localhost:3001/equipamentos';
+
+
+
+import {
+  cadastrarEquipamento,
+  listarEquipamentos,
+  deletarEquipamento,
+  editarEquipamento
+} from '../controllers/equipamentosController';
 
 /**
  * @swagger
@@ -62,8 +66,7 @@ const JSON_SERVER_URL = 'http://localhost:3001/equipamentos';
  *           type: boolean
  *         data:
  *           $ref: '#/components/schemas/Equipamento'
- *         error:
- *           type: string
+ * 
  */
 
 //------------------------------------------------
@@ -95,7 +98,14 @@ const JSON_SERVER_URL = 'http://localhost:3001/equipamentos';
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/ApiResponse'
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 error:
+ *                   type: string
+ *                   example: "Nome e situação são obrigatórios."
  *       500:
  *         description: Erro interno do servidor
  *         content:
@@ -103,84 +113,16 @@ const JSON_SERVER_URL = 'http://localhost:3001/equipamentos';
  *             schema:
  *               type: object
  *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
  *                 error:
  *                   type: string
  *                   example: "Erro ao cadastrar equipamentos"
  */
 
 
-// Rota para cadastrar aparelho - POSTGRE
-/*router.post('/Cadastro', async (req, res) => {
-  const { nome, situacao } = req.body as Equipamento;
-
-  console.log('Dados recebidos:', req.body);
-  
-  if (!nome || !situacao) {
-    const response: ApiResponse<null> = {
-      success: false,
-      error: 'Nome e situação são obrigatórios.'
-    };
-    return res.status(400).json(response);
-  }
-
-  try {
-    const result = await pool.query(
-      'INSERT INTO equipamentos (nome, situacao) VALUES ($1, $2) RETURNING *',
-      [nome, situacao]
-    );
-    
-    const response: ApiResponse<Equipamento> = {
-      success: true,
-      data: result.rows[0]
-    };
-    return res.status(201).json(response);
-  } catch (err) {
-    console.error(err);
-    const response: ApiResponse<null> = {
-      success: false,
-      error: 'Erro ao cadastrar equipamento'
-    };
-    return res.status(500).json(response);
-  }
-});*/
-
-
-//Cadastro de aparelho - JSON-SERVER
-router.post('/Cadastro', async (req, res) => {
-    const { nome, situacao } = req.body;
-
-    // Verificando se campos estão vazios
-    if (!nome || !situacao) 
-    {
-      const response: ApiResponse<null> = 
-      {
-        success: false,
-        error: 'Nome e situação são obrigatórios.'
-      };
-      return res.status(400).json(response);
-    }
-
-  try {
-    const response = await axios.post(JSON_SERVER_URL, { nome, situacao });
-    console.log('Dados recebidos:', req.body);
-
-    const retornoEndpoint: ApiResponse<Equipamento> = {
-      success: true,
-      data: response.data // O json-server retorna o objeto criado diretamente
-    };
-    
-    return res.status(201).json(retornoEndpoint);
-
-    } catch (err) {
-    console.error(err);
-    
-    const response: ApiResponse<null> = {
-      success: false,
-      error: 'Erro ao cadastrar equipamento'
-    };
-    return res.status(500).json(response);
-  }
-});
+router.post('/Cadastro', cadastrarEquipamento);
 
 
 /**
@@ -212,30 +154,7 @@ router.post('/Cadastro', async (req, res) => {
  */
 
 
-// Rota para buscar aparelhos - POSTGRE
-/*router.get('/Allaparelhos', async (req, res) => {
-  try {
-    const result = await pool.query('SELECT * FROM equipamentos');
-    console.log('result:', result.rows);
-    return res.status(200).json(result.rows);//o retorno de result é um objeto que contém uma propriedade chamada rows, que é um array com os dados da tabela
-  } catch (err) {
-    console.error(err);
-    return res.status(500).json({ error: 'Erro ao buscar equipamentos' });
-  }
-});*/
-
-//Rota para buscar aparelhos - JSON-SERVER (comentar quando não usar)
-router.get('/Allaparelhos', async (req, res) => {
-  try {
-    // Usando json-server
-    const response = await axios.get(JSON_SERVER_URL);
-    return res.status(200).json(response.data);
-    } catch (err) {
-    console.error(err);
-    return res.status(500).json({ error: 'Erro ao buscar equipamentos' });
-  }
-});
-
+router.get('/Allaparelhos', listarEquipamentos);
 
 
 
@@ -284,38 +203,8 @@ router.get('/Allaparelhos', async (req, res) => {
  *                 - error
  */
 
+router.delete('/Deletar/:id', deletarEquipamento);
 
-// Rota para deletar aparelhos - Postgre
-/*router.delete('/Deletar/:id', async (req, res) => {
-  const { id } = req.params;
-  try {
-    const result = await pool.query('DELETE FROM equipamentos WHERE id = $1', [id]);
-    const response: ApiResponse<null> = {
-      success: true,
-      data: null,
-    };
-    return res.status(204).json(response);
-  } catch (err) {
-    console.error(err);
-    return res.status(500).json({ error: 'Erro ao deletar equipamentos' });
-  }
-});*/
-
-//Rota para deletar aparelhos - JSON-SERVER (comentar quando não usar)
-router.delete('/Deletar/:id', async (req, res) => {
-  const { id } = req.params;
-  try {
-    const response = await axios.delete(`${JSON_SERVER_URL}/${id}`);
-    const retornoEndpoint: ApiResponse<null> = {
-      success: true,
-      data: null,
-    };
-    return res.status(204).json(retornoEndpoint);
-    } catch (err) {
-    console.error(err);
-    return res.status(500).json({ error: 'Erro ao deletar equipamentos' });
-  }
-});
 
 /**
  * @swagger
@@ -348,31 +237,7 @@ router.delete('/Deletar/:id', async (req, res) => {
  *         description: Erro interno do servidor
  */
 
-// Rota para editar aparelhos - POSTGRE
-/*router.put('/Editar/:id', async (req, res) => {
-  console.log('req.body:', req.body);
-  const { id } = req.params;
-  const { nome, situacao } = req.body;
-  try {
-    const result = await pool.query('UPDATE equipamentos SET nome = $1, situacao = $2 WHERE id = $3', [nome,situacao,id]);
-    return res.status(200).json(result.rows);//o retorno de result é um objeto que contém uma propriedade chamada rows, que é um array com os dados da tabela
-  } catch (err) {
-    console.error(err);
-    return res.status(500).json({ error: 'Erro ao editar equipamento' });
-  }
-});*/
+router.put('/Editar/:id', editarEquipamento);
 
-//Rota para editar aparelhos - JSON-SERVER (comentar quando não usar)
-router.put('/Editar/:id', async (req, res) => {
-  const { id } = req.params;
-  const { nome, situacao } = req.body;
-  try {
-    const response = await axios.put(`${JSON_SERVER_URL}/${id}`, { nome, situacao });
-    return res.status(204).json(response.data); // json-server retorna o objeto atualizado
-    } catch (err) {
-    console.error(err);
-    return res.status(500).json({ error: 'Erro ao editar equipamentos' });
-  }
-});
 
 export default router;
