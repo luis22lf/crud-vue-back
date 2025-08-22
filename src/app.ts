@@ -1,6 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import equipamentosRouter from './routes/equipamentos.routes';
+import usuariosRouter from './routes/usuarios.routes';
 
 const app = express();
 
@@ -10,6 +11,8 @@ app.use(express.json());
 
 // Rotas
 app.use('/api/equipamentos', equipamentosRouter);
+
+app.use('/api/users', usuariosRouter);
 
 // Rota de saúde
 app.get('/health', (req, res) => {

@@ -15,5 +15,12 @@
       "situacao": "funcional",
       "id": "eec5"
     }
+  ],
+
+  "usuarios": [
+    {
+      "login": "admin@empresa.com",
+      "senha": "$2b$10$s4TKxPaUg.0Ed62klYYoo..7D6kRpLefOj0TNgez850RWwbwJ.Uf2"
+    }
   ]
 }
