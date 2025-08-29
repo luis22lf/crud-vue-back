@@ -1,13 +1,14 @@
 -- Criar tabela equipamentos
 CREATE TABLE IF NOT EXISTS equipamentos (
     id SERIAL PRIMARY KEY,
-    nome VARCHAR(100) NOT NULL,
+    nome VARCHAR(100) NOT NULL UNIQUE,
     situacao VARCHAR(100) NOT NULL
 );
 
 -- Criar tabela usuarios
 CREATE TABLE IF NOT EXISTS usuarios (
-    email VARCHAR(100) PRIMARY KEY,
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    email VARCHAR(100) UNIQUE,
     senha VARCHAR(100) NOT NULL
 );
 
@@ -21,4 +22,4 @@ INSERT INTO equipamentos (nome, situacao) VALUES
 ('Maquina1', 'funcional'),
 ('Maquina2', 'quebrado'),
 ('Maquina3', 'uso-exclusivo')
-ON CONFLICT DO NOTHING;
+ON CONFLICT (nome) DO NOTHING;

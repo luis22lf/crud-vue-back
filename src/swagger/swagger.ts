@@ -16,7 +16,7 @@ const options = {
     },
     servers: [
       {
-        url: 'http://localhost:3000/api/equipamentos',
+        url: 'http://localhost:3000/api',
         description: 'Servidor local',
       },
     ],

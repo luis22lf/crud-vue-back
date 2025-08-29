@@ -75,7 +75,7 @@ import {
 
 /**
  * @swagger
- * /Cadastro:
+ * /equipamentos/Cadastro:
  *   post:
  *     summary: Cadastra um novo equipamento
  *     description: Endpoint para cadastrar um novo equipamento na tabela
@@ -127,7 +127,7 @@ router.post('/Cadastro', cadastrarEquipamento);
 
 /**
  * @swagger
- * /Allaparelhos:
+ * /equipamentos/Allaparelhos:
  *   get:
  *     summary: Retorna todos os equipamentos cadastrados
  *     description: Endpoint para listar todos os equipamentos existentes na tabela
@@ -160,7 +160,7 @@ router.get('/Allaparelhos', listarEquipamentos);
 
 /**
  * @swagger
- * /Deletar/{id}:
+ * /equipamentos/Deletar/{id}:
  *   delete:
  *     summary: Deleta equipamento
  *     description: Endpoint para deletar um equipamento existente na tabela
@@ -208,7 +208,7 @@ router.delete('/Deletar/:id', deletarEquipamento);
 
 /**
  * @swagger
- * /Editar/{id}:
+ * /equipamentos/Editar/{id}:
  *   put:
  *     summary: Edita equipamento
  *     description: Endpoint para editar um equipamento existente na tabela

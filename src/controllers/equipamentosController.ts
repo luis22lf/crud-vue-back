@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import pool from '../config/configs';
 import { Equipamento, ApiResponse } from '../types';
 import axios from 'axios'; // Adicionado para json-server
+import { verificarToken } from '../utils/jwt';
 
 const JSON_SERVER_URL = "http://localhost:3001/equipamentos";
 
@@ -19,6 +20,22 @@ export const cadastrarEquipamento = async (req: Request, res: Response) =>
         error: 'Nome e situação são obrigatórios.'
         };
         return res.status(400).json(response);
+    }
+
+    let tokenHeader = req.headers.authorization;
+
+    if (!tokenHeader) {
+        return res.status(401).json({ error: 'Token não fornecido' });
+    }
+    
+    //comando split quebra o token ao encontrar delimitador ' ' e salva em um array
+    //cada elemento do array é uma parte do header, indice 0 é o tipo(Bearer) e indice 1 é o token
+    tokenHeader = tokenHeader.split(' ')[1];
+    console.log('Authorization Header:', tokenHeader);
+
+    // Verificação do token
+    if (!verificarToken(tokenHeader)) {
+        return res.status(403).json({ error: 'Token inválido' });
     }
 
     try 
@@ -63,6 +80,23 @@ export const cadastrarEquipamento = async (req: Request, res: Response) =>
 
 export const listarEquipamentos = async (req: Request, res: Response) => 
 {
+
+    let tokenHeader = req.headers.authorization;
+
+    if (!tokenHeader) {
+        return res.status(401).json({ error: 'Token não fornecido' });
+    }
+    
+    //comando split quebra o token ao encontrar delimitador ' ' e salva em um array
+    //cada elemento do array é uma parte do header, indice 0 é o tipo(Bearer) e indice 1 é o token
+    tokenHeader = tokenHeader.split(' ')[1];
+    console.log('Authorization Header:', tokenHeader);
+
+    // Verificação do token
+    if (!verificarToken(tokenHeader)) {
+        return res.status(403).json({ error: 'Token inválido' });
+    }
+
     try 
     {
         let data: Equipamento[];
@@ -103,6 +137,22 @@ export const deletarEquipamento = async (req: Request, res: Response) =>
         error: 'ID inválido'
         };
         return res.status(400).json(response);
+    }
+
+    let tokenHeader = req.headers.authorization;
+
+    if (!tokenHeader) {
+        return res.status(401).json({ error: 'Token não fornecido' });
+    }
+    
+    //comando split quebra o token ao encontrar delimitador ' ' e salva em um array
+    //cada elemento do array é uma parte do header, indice 0 é o tipo(Bearer) e indice 1 é o token
+    tokenHeader = tokenHeader.split(' ')[1];
+    console.log('Authorization Header:', tokenHeader);
+
+    // Verificação do token
+    if (!verificarToken(tokenHeader)) {
+        return res.status(403).json({ error: 'Token inválido' });
     }
 
     try 
@@ -151,6 +201,22 @@ export const editarEquipamento = async (req: Request, res: Response) =>
 {
   const { id } = req.params;
   const { nome, situacao } = req.body;
+
+  let tokenHeader = req.headers.authorization;
+
+    if (!tokenHeader) {
+        return res.status(401).json({ error: 'Token não fornecido' });
+    }
+    
+    //comando split quebra o token ao encontrar delimitador ' ' e salva em um array
+    //cada elemento do array é uma parte do header, indice 0 é o tipo(Bearer) e indice 1 é o token
+    tokenHeader = tokenHeader.split(' ')[1];
+    console.log('Authorization Header:', tokenHeader);
+
+    // Verificação do token
+    if (!verificarToken(tokenHeader)) {
+        return res.status(403).json({ error: 'Token inválido' });
+    }
 
     try 
     {
