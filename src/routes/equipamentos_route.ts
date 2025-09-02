@@ -16,7 +16,7 @@ import {
   listarEquipamentos,
   deletarEquipamento,
   editarEquipamento
-} from '../controllers/equipamentosController';
+} from '../controllers/equipamentos_controller';
 
 /**
  * @swagger

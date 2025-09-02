@@ -3,6 +3,7 @@ import pool from '../config/configs';
 import { Equipamento, ApiResponse } from '../types';
 import axios from 'axios'; // Adicionado para json-server
 import { verificarToken } from '../utils/jwt';
+import * as equipamentosRepo from '../repositories/equipamentos_repository';
 
 const JSON_SERVER_URL = "http://localhost:3001/equipamentos";
 
@@ -46,8 +47,8 @@ export const cadastrarEquipamento = async (req: Request, res: Response) =>
         if (process.env.DB_TYPE == 'postgre')
         {
             // Acesso direto ao banco de dados
-            const result = await pool.query('INSERT INTO equipamentos (nome, situacao) VALUES ($1, $2) RETURNING *',[nome, situacao]);
-            data = result.rows[0];
+            const result = await equipamentosRepo.cadastrarEquipamento(nome, situacao);
+            data = result;
         }
         //Acesso Json-server
         else
@@ -105,8 +106,8 @@ export const listarEquipamentos = async (req: Request, res: Response) =>
         if (process.env.DB_TYPE == 'postgre')
         {
             // Acesso direto ao banco de dados
-            const result = await pool.query('SELECT * FROM equipamentos ORDER BY id');
-            data = result.rows
+            const result = await equipamentosRepo.listarEquipamentos();
+            data = result;
         }
         //Acesso json-server
         else
@@ -161,15 +162,16 @@ export const deletarEquipamento = async (req: Request, res: Response) =>
         if (process.env.DB_TYPE == 'postgre')
         {
             // Acesso direto ao banco de dados
-            const result = await pool.query('DELETE FROM equipamentos WHERE id = $1 RETURNING *',[id]);
+            const result = equipamentosRepo.deletarEquipamento(parseInt(id));
             
-            if (result.rowCount === 0) {
-            const response: ApiResponse<null> = 
+            if (!result) 
             {
-                success: false,
-                error: 'Equipamento não encontrado'
-            };
-            return res.status(404).json(response);
+                const response: ApiResponse<null> = 
+                {
+                    success: false,
+                    error: 'Equipamento não encontrado'
+                };
+                return res.status(404).json(response);
             }
         }
         //Acesso json-server
@@ -226,9 +228,8 @@ export const editarEquipamento = async (req: Request, res: Response) =>
         if (process.env.DB_TYPE == 'postgre')
         {
             // Acesso direto ao banco de dados
-            const result = await pool.query('UPDATE equipamentos SET nome = $1, situacao = $2 WHERE id = $3',[nome, situacao, id]);
-
-            data = result.rows[0];
+            const result = await equipamentosRepo.editarEquipamento(parseInt(id), nome, situacao);
+            data = result;
         }
         //Acesso json-server
         else 

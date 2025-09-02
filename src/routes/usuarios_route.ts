@@ -10,7 +10,7 @@ console.log("rodando arquivo de rotas");
 import {
   loginUsuario,
   
-} from '../controllers/usuariosController';
+} from '../controllers/usuarios_controller';
 
 
 /**

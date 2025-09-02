@@ -1,7 +1,7 @@
 import express from 'express';
 import cors from 'cors';
-import equipamentosRouter from './routes/equipamentos.routes';
-import usuariosRouter from './routes/usuarios.routes';
+import equipamentosRouter from './routes/equipamentos_route';
+import usuariosRouter from './routes/usuarios_route';
 
 const app = express();
 
