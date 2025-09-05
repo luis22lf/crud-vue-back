@@ -1,5 +1,4 @@
 import { Request, Response } from 'express';
-import pool from '../config/configs';
 import { Equipamento, ApiResponse } from '../types';
 import axios from 'axios'; // Adicionado para json-server
 import { verificarToken } from '../utils/jwt';
@@ -91,15 +90,34 @@ export const listarEquipamentos = async (req: Request, res: Response) =>
     //comando split quebra o token ao encontrar delimitador ' ' e salva em um array
     //cada elemento do array é uma parte do header, indice 0 é o tipo(Bearer) e indice 1 é o token
     tokenHeader = tokenHeader.split(' ')[1];
-    console.log('Authorization Header:', tokenHeader);
+    //console.log('Authorization Header:', tokenHeader);
 
-    // Verificação do token
-    if (!verificarToken(tokenHeader)) {
-        return res.status(403).json({ error: 'Token inválido' });
+    try
+    {
+        // Verificação do token - se falhar, vai para o catch
+        verificarToken(tokenHeader);
+    }
+    catch(error)
+    {
+        // Se o erro for de token expirado
+        if (error === 'Token expirado') {
+            console.log('Token expirado detectado no catch do controller');
+            return res.status(401).json({ error: 'Token expirado' });
+        }
+        // Para outros erros de token
+        console.log('Token inválido detectado no catch do controller');
+        return res.status(401).json({ error: 'Token inválido' });
     }
 
+    // Se a verificação passou, continua com a lógica principal
     try 
     {
+        // Verifica o token e decodifica
+        const tokenDecodificado = verificarToken(tokenHeader);
+        // Adiciona o token decodificado à request para uso posterior, se necessário
+        req = tokenDecodificado;
+        console.log('Token decodificado adicionado à req.id_usuario:', req);
+
         let data: Equipamento[];
 
         //Acesso postgre
@@ -116,10 +134,10 @@ export const listarEquipamentos = async (req: Request, res: Response) =>
             data = response.data;
         }
         return res.status(200).json(data);
-    } catch (err) 
+    } catch (err:string | any) 
     {
         console.error(err);
-        return res.status(500).json({ error: 'Erro ao buscar equipamentos' });
+         return res.status(500).json({ error: 'Erro ao buscar equipamentos' });
     }
 };
 
