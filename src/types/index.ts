@@ -10,3 +10,11 @@ export type ApiResponse<T> = {
   data?: T;
   error?: string;
 };
+
+declare global {
+  namespace Express {
+  export interface Request {
+      id_usuario?: string; // Agora é string
+    }
+  }
+}

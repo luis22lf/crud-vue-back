@@ -9,7 +9,7 @@ console.log("rodando arquivo de rotas");
 
 import {
   loginUsuario,
-  
+  renovarToken,
 } from '../controllers/usuarios_controller';
 
 
@@ -112,5 +112,62 @@ import {
 
 router.post('/Login', loginUsuario);
 
+
+/**
+ * @swagger
+ * /users/RenovarToken:
+ *   post:
+ *     summary: Renova o token de um usuário
+ *     description: Endpoint para renovar o token de um usuário existente
+ *     tags: [Usuarios]
+ *     parameters:
+ *       - in: header
+ *         name: Authorization
+ *         required: true
+ *         schema:
+ *           type: string
+ *           example: "Bearer <refresh_token>"
+ *     responses:
+ *       200:
+ *         description: Token renovado com sucesso
+ *         content:
+ *           application/json:
+ *             schema:
+ *                 type: object
+ *                 properties:
+ *                   message:
+ *                     type: string
+ *                     example: "Novo token gerado com sucesso"
+ *                   token:
+ *                     type: string
+ *                     example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+ *       401:
+ *         description: Erro de autenticação - Token inválido ou expirado
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *             examples:
+ *               tokenExpirado:
+ *                 summary: RefreshToken expirado
+ *                 value:
+ *                   error: "RefreshTokenToken expirado"
+ *               tokenInvalido:
+ *                 summary: Token inválido
+ *                 value:
+ *                   error: "Token inválido"
+ *               falhaGerarToken:
+ *                 summary: Falha ao gerar novo token
+ *                 value:
+ *                   error: "Falha ao gerar novo token"
+ *               refreshTokenNaoFornecido:
+ *                 summary: RefreshToken não fornecido
+ *                 value:
+ *                   error: "RefreshToken não fornecido"
+ */
+router.post('/RenovarToken', renovarToken);
 
 export default router;

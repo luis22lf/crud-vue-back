@@ -1,23 +1,23 @@
 const jwt = require('jsonwebtoken');
 
 export function gerarToken(id_usuario:string) {
-  const jwtGerado = jwt.sign({id_usuario}, process.env.JWT_SECRET , { expiresIn: '5s' });
+  const jwtGerado = jwt.sign({id_usuario}, process.env.JWT_SECRET , { expiresIn: '15s' });
   return jwtGerado;
 }
 
 export function verificarToken(token:string) {
   try 
   {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    console.log('Decoded Token:', decoded);
-    if (decoded)
+    const decoded = jwt.verify(token, process.env.JWT_SECRET) ;
+    if (decoded && decoded.id_usuario) //decodificou com sucesso e tem o id_usuario
     {
-        console.log('Token válido:', decoded);
-        return decoded;
-    }
-    else
+      console.log('Token válido:', decoded);
+      console.log('ID do usuário no token:', decoded.id_usuario);
+      return decoded;
+    } else 
     {
-      throw new Error('Token inválido');
+      console.log('Estrutura do token:', JSON.stringify(decoded, null, 2));
+      throw new Error('Token inválido: payload não contém id_usuario');
     }
   } catch (error) {
     // Verifica se o token expirou
@@ -38,7 +38,9 @@ export function gerarRefreshToken(id_usuario:string) {
     { id_usuario, tipo: 'refresh' }, 
     process.env.JWT_REFRESH_SECRET, // Use um segredo diferente
     { expiresIn: '4h' } // 4 horas
-  );
+    );
+    console.log('Refresh Token gerado:', refreshToken);
+    console.log('ID do usuário no Refresh Token gerado:', refreshToken.id_usuario);
   return refreshToken;
 }
 

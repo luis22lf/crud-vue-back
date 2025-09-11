@@ -1,7 +1,8 @@
 import express from 'express';
 import cors from 'cors';
 import equipamentosRouter from './routes/equipamentos_route';
-import usuariosRouter from './routes/usuarios_route';
+import usuariosRouter from './routes/usuarios_route'
+import { verifyTokenMiddleware } from './middleware/verifyToken';
 
 const app = express();
 
@@ -10,7 +11,7 @@ app.use(cors());
 app.use(express.json());
 
 // Rotas
-app.use('/api/equipamentos', equipamentosRouter);
+app.use('/api/equipamentos',verifyTokenMiddleware, equipamentosRouter);
 
 app.use('/api/users', usuariosRouter);
 

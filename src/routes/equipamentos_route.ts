@@ -17,6 +17,7 @@ import {
   deletarEquipamento,
   editarEquipamento
 } from '../controllers/equipamentos_controller';
+import { verifyTokenMiddleware } from '../middleware/verifyToken';
 
 /**
  * @swagger

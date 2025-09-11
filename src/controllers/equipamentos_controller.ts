@@ -83,24 +83,25 @@ export const listarEquipamentos = async (req: Request, res: Response) =>
 
     let tokenHeader = req.headers.authorization;
 
-    if (!tokenHeader) {
+/*    if (!tokenHeader) {
         return res.status(401).json({ error: 'Token não fornecido' });
     }
-    
+*/    
     //comando split quebra o token ao encontrar delimitador ' ' e salva em um array
     //cada elemento do array é uma parte do header, indice 0 é o tipo(Bearer) e indice 1 é o token
-    tokenHeader = tokenHeader.split(' ')[1];
+//    tokenHeader = tokenHeader.split(' ')[1];
     //console.log('Authorization Header:', tokenHeader);
 
-    try
+/*    try
     {
         // Verificação do token - se falhar, vai para o catch
         verificarToken(tokenHeader);
     }
     catch(error)
     {
+        console.log('Erro dessa buceta:', error);
         // Se o erro for de token expirado
-        if (error === 'Token expirado') {
+        if (error == 'Error: Token expirado') {
             console.log('Token expirado detectado no catch do controller');
             return res.status(401).json({ error: 'Token expirado' });
         }
@@ -108,15 +109,15 @@ export const listarEquipamentos = async (req: Request, res: Response) =>
         console.log('Token inválido detectado no catch do controller');
         return res.status(401).json({ error: 'Token inválido' });
     }
-
+*/
     // Se a verificação passou, continua com a lógica principal
     try 
     {
         // Verifica o token e decodifica
-        const tokenDecodificado = verificarToken(tokenHeader);
+//        const tokenDecodificado = verificarToken(tokenHeader) as { id_usuario: string };
         // Adiciona o token decodificado à request para uso posterior, se necessário
-        req = tokenDecodificado;
-        console.log('Token decodificado adicionado à req.id_usuario:', req);
+//        req.id_usuario = tokenDecodificado.id_usuario;
+        console.log('Token decodificado adicionado à req.id_usuario:', req.id_usuario);
 
         let data: Equipamento[];
 
