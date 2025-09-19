@@ -14,6 +14,11 @@ export const loginUsuario = async (req: Request, res: Response) =>
     {
         const result = await usuariosRepo.buscarIdESenhaPorEmail(login);
         console.log('result', result);
+
+        if (!result) {
+            return res.status(401).json({ error: 'Credenciais inválidas' });
+        }
+        // Comparando a senha fornecida com a senha armazenada
         const senhaCorreta = await bcrypt.compare(senha, result.senha);
         console.log('senhaCorreta?', senhaCorreta);
 

@@ -2,7 +2,7 @@
 import dotenv from 'dotenv';
 dotenv.config();
 
-import pool from './config/configs';
+import pool from './config/dbconfigs';
 
 async function test() {
   try {

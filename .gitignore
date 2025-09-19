@@ -50,3 +50,5 @@ public/dev-dist/
 # Optional: If using Docker
 docker-compose.override.yml
 **/postgres-data/
+
+/src/generated/prisma

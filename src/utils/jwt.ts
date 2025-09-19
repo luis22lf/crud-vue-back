@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken');
 
 export function gerarToken(id_usuario:string) {
-  const jwtGerado = jwt.sign({id_usuario}, process.env.JWT_SECRET , { expiresIn: '15s' });
+  const jwtGerado = jwt.sign({id_usuario}, process.env.JWT_SECRET , { expiresIn: '15m' });
   return jwtGerado;
 }
 
